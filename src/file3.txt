@@ -1,0 +1,1 @@
+Acesso sequencialForma de acesso mais usual:dados acessados em sequência do início ao fim do arquivoPara cada arquivo aberto há umponteiro de acessoA cada leitura ou escrita, o ponteiro é incrementadoUmflag(End-of-File) indica o fim do arquivo.
