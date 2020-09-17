@@ -1,1 +1,5 @@
-Acesso direto (ou aleatório)Acesso direto a posições específicas do arquivo:Indica-se a posição do arquivo onde fazer o acessoread (file, position, size, buffer)Importante em SGBDs e aplicações similaresRaramente implementada “pura” nos SOs
+
+
+----------------------------------
+
+SGBDs e aplicações similaresRaramente implementada “pura” nos SOs
