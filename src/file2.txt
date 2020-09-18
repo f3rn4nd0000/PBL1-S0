@@ -1,7 +1,4 @@
-Acesso sequencialForma de acesso mais usual:dados acessados em sequência do início ao fim do arquivoPara cada arquivo aberto há umponteiro de acessoA cada leitura ou escrita, o ponteiro é incrementadoUmflag(End-of-File) indica o fim do arquivo.
-Hello World
-See You Again!
-______________
-Hello World
-See You Again!
-______________
+Acesso sequencialForma de acesso mais usual:dados acessados em sequência do início ao fim do arquivo
+Para cada arquivo aberto há umponteiro de acesso
+A cada leitura ou escrita, o ponteiro é incrementado
+Umflag(End-of-File) indica o fim do arquivo.
