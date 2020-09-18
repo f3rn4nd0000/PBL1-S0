@@ -1,4 +1,5 @@
 package util;
+import util.TextFile;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -12,9 +13,14 @@ public class Principal {
     static Semaphore writeLock = new Semaphore(1);
     static Semaphore synchronize = new Semaphore(1);	// criei classe synchronize que irá copiar o conteudo de uma file e colar em outra file
     static int readCount = 0;
-    private LinkedList fileList = new LinkedList();   
-    TextFile file1 = new TextFile();
+    public LinkedList<TextFile> fileList = new LinkedList<TextFile>();   
+    public LinkedList<String> lista  = new LinkedList<String>();
     
+    TextFile file1 = new TextFile();
+    TextFile file2 = new TextFile();
+    TextFile file3 = new TextFile();
+    
+    file1. 
     
     
     static class Read implements Runnable {
@@ -96,7 +102,7 @@ public class Principal {
         t5.setName("thread5");
         Thread t6 = new Thread(read);
         t6.setName("thread6");
-        
+
         t6.start();
         t1.start();
        // t6.start();
