@@ -6,19 +6,19 @@ import java.util.concurrent.*;
 //import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.Thread;
 import java.lang.Object;
+import java.lang.Math;
 
 public class Principal {
  
     static Semaphore readLock = new Semaphore(1);
     static Semaphore writeLock = new Semaphore(1);
     static Semaphore synchronize = new Semaphore(1);	// criei classe synchronize que irá copiar o conteudo de uma file e colar em outra file
-    static int readCount = 0;
+    static int readCount = 0;		//aqui nesse problema temos um leitor e vários escritores!
     private LinkedList<TextFile> fileList = new LinkedList<TextFile>();   //aqui serão armazenados os arquivos de texto
     private TextFile file1,file2,file3;
-    	
     
     
-    //A ideia eh retornar uma string para usar como parametro em textfile.content! Aproveitar e usar tbm para o sync()!
+    //A ideia eh retornar uma string para usar como parametro em textfile.getContent() Aproveitar e usar tbm para o sync()!
 	static String readFileAsString(String filePath) throws IOException {
         StringBuffer fileData = new StringBuffer();
         FileReader file_r = new FileReader(filePath);
@@ -34,11 +34,10 @@ public class Principal {
 	}
     
 	//método para armazenar o conteúdo de um arquivo na classe TextFile
-     static void storeContent(String filePath, TextFile file_x) throws IOException {
+    static void storeContent(String filePath, TextFile file_x) throws IOException {
     	 String s1 = readFileAsString(filePath);
     	 file_x.setContent(s1);    	 
     }
-    
     
     static class Read implements Runnable {
     	@Override
@@ -54,6 +53,18 @@ public class Principal {
 
                 //Reading section
                 System.out.println("Thread "+Thread.currentThread().getName() + " is READING");
+                
+                
+                /*
+                 * Aqui vc deve implementar como se deve ler o arquivo de texto! COMO FAZER ISS???
+                 * Agora lembrei, deve-se chamar a função randômica que seleciona qual dos TextFile será processado
+                 * e então:
+                 * 1)
+                 * provavelmente passar como PARÂMETRO???
+                 */
+                
+                
+                
                 Thread.sleep(1500);
                 System.out.println("Thread "+Thread.currentThread().getName() + " has FINISHED READING");
 
@@ -92,6 +103,9 @@ public class Principal {
     			Read read = new Read();
     			Write write = new Write();
     			
+    			
+    			
+    			
     		} catch (InterruptedException e) {
             System.out.println(e.getMessage());
     		}
@@ -99,7 +113,7 @@ public class Principal {
     } */
     
     private boolean checkLastUpdate() {
-    	
+    	//aqui tem que ser na classe textfile
     }
     
     public static void main(String[] args) throws Exception {
@@ -111,25 +125,37 @@ public class Principal {
         TextFile file1 = new TextFile();
         TextFile file2 = new TextFile();
         TextFile file3 = new TextFile();
-        
+        int min = 0;
+        int max = 2;
+        int range = max - min + 1;
         
         //armazena os conteúdos dos arquivos de texto nas classes!
         storeContent("C:\\Users\\ffern\\eclipse-workspace\\OpenReadText\\src\\file1.txt",file1); 
         storeContent("C:\\Users\\ffern\\eclipse-workspace\\OpenReadText\\src\\file2.txt",file2);
         storeContent("C:\\Users\\ffern\\eclipse-workspace\\OpenReadText\\src\\file3.txt",file3);
         
-        
-        System.out.println("conteudo do arquivo 1:"+file1.getContent());
+        //só pra testar se tava conseguindo passar os dados para os parâmetros da classe TextFile
+        System.out.println("conteudo do arquivo 1:"+file1.getContent()+"\n");
         
         //adiciona as classes que representam os arquivos numa lista de arquivos!
         fileList.add(file1);
         fileList.add(file2);
         fileList.add(file3);
         
-		/*
-		 * Serão criadas 5 threads escritoras e 1 leitora, apenas 
-		 * inicialmente, porém a ideia é usar 5 threads SINCRONIZADORAS
-		 * 1 LEITORA E INDEFINIDAS ESCRITORAS
+        
+        //conforme disse a professora deverão ser pré-definidos a qtd de threads para leitores, escritores e sinc's
+        
+        //Aqui serão selecionados randomicamente cada elemento da lista para que as operações sejam feitas
+        for (int i = 0; i < 10; i++) { 
+            int rand = (int)(Math.random() * range) + min; 
+            System.out.println(rand);
+            fileList.get(rand);
+            int rand_p = (int)(Math.random() * range) + min; //a ideia de rand_p é gerar um numero aleatório para chamar um dos 3 tipos de processo, caso seja gerado um processo de escrita, devemos chamar o processo de sincronizacao logo após
+
+        }
+        /*
+		 * Serão criadas 5 threads escritoras e 1 leitora, apenas inicialmente,  
+		 * Porém a ideia é usar 5 threads SINCRONIZADORAS, 1 LEITORA E INDEFINIDAS ESCRITORAS
 		 */        
         
         Thread t1 = new Thread(write);
@@ -152,6 +178,15 @@ public class Principal {
         t2.start();
         t4.start();
         t5.start();
+
+        
+        
+/*
+ *	Após cada chamada do método de escrita o método de sincronização deverá ser chamado!!!      
+ *         
+ */
+        
+        
 /*
  * Observe que há várias threads escrevendo e que a thread de leitura 
  * sempre interrompe a execução destas, portanto cumprindo assim a sua função,
@@ -159,12 +194,10 @@ public class Principal {
  * de leitura e escrita porém só irão realizar estas operações em um dos arquivos escolhidos.        
  */
         
-        
 /*
  * Observe que as threads de leitura seguem a ordem 
  * estabelecida pela  escrita do código, porém as threads 
- * de escrita não o fazem        
+ * de escrita não o fazem!        
  */
-        
     }
 }
