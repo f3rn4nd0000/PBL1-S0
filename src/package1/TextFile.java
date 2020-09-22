@@ -1,29 +1,32 @@
 package package1;
+/**
+ * Criei essa classe pra representar os arquivos de texto e facilitar as manipulações do filePath para os métodos de escrita e cópia.
+ * @author ffern
+ * 
+ */
+public class TextFile extends Operations {
+	
+	String filePath;
+	String content;
+	
+	public TextFile() {
+		this.filePath = filePath;
+		this.content = content;
+	}
 
-public class TextFile {
-    	private int lastmodified; //esta variável servirá de controle para saber se foi o último arquivo a ser modificado
-    	private String content; //conteúdo que está inserido no arquivo, aqui trabalharemos com arquivo de texto.
- 
-    	public TextFile() {
-    		this.lastmodified = lastmodified;
-    		this.content = content;
-    	}
+	public String getFilePath() {
+		return filePath;
+	}
 
-		public int getLastmodified() {
-			return lastmodified;
-		}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
 
-		public void setLastmodified(int lastmodified) {
-			this.lastmodified = lastmodified;
-		}
+	public String getContent() {
+		return content;
+	}
 
-		public String getContent() {
-			return content;
-		}
-		
-		//por aqui poderemos modificar o conteúdo ao se tentar por exemplo passar parâmetro?!
-		public void setContent(String content) { 
-			this.content = content;
-		}
-		
-    }
+	public void setContent(String content) {
+		this.content = content;
+	}
+}
