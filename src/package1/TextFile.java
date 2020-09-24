@@ -1,4 +1,5 @@
 package package1;
+import java.io.File;
 /**
  * Criei essa classe pra representar os arquivos de texto e facilitar as manipulações do filePath para os métodos de escrita e cópia.
  * @author ffern

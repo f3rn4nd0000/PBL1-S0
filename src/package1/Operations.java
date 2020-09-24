@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 public class Operations {
-
 	
-/**<NEWLINE>
- * 
+/**
  * @param filePath
  * @return String contendo os dados no arquivo cujo caminho do diretório é filePath
  * @throws IOException
@@ -33,10 +35,10 @@ public class Operations {
   	 * @param s string a ser preenchida no
   	 * @param filePath arquivo de endereço filepath = "C:\blabla"
   	 */
-	public void writeStringAtFile(String s, String filePath) {	
+	public void writeStringAtFile(String s, String filePath) throws IOException {	
 	    try {
 	        FileWriter myWriter = new FileWriter(filePath,true);
-	        myWriter.write(readFileAsString(s));
+	        myWriter.write(s);
 	        myWriter.close();
 	        System.out.println("Successfully wrote to the file.");
 	      } catch (IOException e) {
