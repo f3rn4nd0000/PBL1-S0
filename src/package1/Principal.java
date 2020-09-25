@@ -43,12 +43,6 @@ public class Principal {
 //	    	System.out.println("\nget2"+"\n"+listaDeConteudo.get(2).getFilePath());
 	    	
 	    }
-	   
-	   static void manageToCopyFile() {
-		   f4 = new TextFile();
-		   f4.setFilePath("C:\\Users\\ffern\\eclipse-workspace\\OpenReadText\\src\\tocopy.txt");
-	   }
-	   
 	    
 //	    public static String manageCopyText() throws IOException {
 //	    	return op.readFileAsString("C:\\Users\\ffern\\eclipse-workspace\\OpenReadText\\src\\tocopy.txt");
@@ -186,8 +180,7 @@ public class Principal {
 	    	
 	    	private String writable;
 	    	private String filePath;
-	    	private Sync sync;
-	    	
+	    	private Sync sync = new Sync();
 	    	
 	    	public Write() {
 	    		this.writable = writable;
@@ -195,6 +188,7 @@ public class Principal {
 	    		this.sync = sync;
 	    	}
 	    	
+	    	//pega o conteudo que será copiado e colado no novo arquivo
 	    	public String getWritable() {
 	    		return writable;
 	    	}
@@ -202,7 +196,7 @@ public class Principal {
 	    	public void setWritable(String newWritable) {
 	    		this.writable = newWritable;
 	    	}
-	    	
+	    	//pega o conteúdo do arquivo que terá as informações escritas
 	    	public String getFilePath() {
 	    		return filePath;
 	    	}
@@ -235,17 +229,23 @@ public class Principal {
 //	    			readFileAsString(getWritable());
 	    			writeStringAtFile(getWritable(),getFilePath());
 //	    			Sync sync = new Sync();
-	    			
-	    			getSync().CopyFileIntoAnother(getFilePath(), sync.getFilePath1());
-	    			sync.CopyFileIntoAnother(getFilePath(), sync.getFilePath2());
-	    			Thread.sleep(2500);
 	    			System.out.println("Thread "+Thread.currentThread().getName() + " finalizou operação ESCRITA");
+	    			Thread.sleep(2500);
+
+	    			writeLock.release();
+	    			
+	    			System.out.println("Thread "+Thread.currentThread().getName() + " está realizando SINCRONIZACAO");
+	    			sync.run();
+	    			System.out.println("\ngetfilepath1():"+getSync().getFilePath1()+"\ngetSync().getFilePath2()"+getSync().getFilePath2());
+//	    			getSync().CopyFileIntoAnother(getFilePath(), getSync().getFilePath2());
+//	    			sync.CopyFileIntoAnother(getFilePath(), sync.getFilePath2());
+	    			System.out.println("Thread "+Thread.currentThread().getName() + " finalizou SINCRONIZACAO");
+	    			Thread.sleep(2500);
 	    			
 //	    			Sync sync = new Sync();
 //	    			Thread t5 = new Thread(sync);
 //	    			t5.setName("thread5");
 //	    			t5.start();
-	    			writeLock.release();
 	    		} catch (InterruptedException e) {
 	    			System.out.println(e.getMessage());
 				} catch (IOException e) {
@@ -259,8 +259,10 @@ public class Principal {
 	    	
 	    	private String filePath1;
 	    	private String filePath2;
+	    	private String filePath3;
 	    	
-	    	public Sync() {
+
+			public Sync() {
 	    		this.filePath1 = filePath1;
 	    		this.filePath2 = filePath2;
 	    	}
@@ -280,17 +282,28 @@ public class Principal {
 	    	public void setFilePath2(String filePath2) {
 	    		this.filePath2 = filePath2;
 	    	}
+	    	
+	    	public String getFilePath3() {
+	    		return filePath3;
+	    	}
+	    	
+	    	public void setFilePath3(String filePath3) {
+	    		this.filePath3 = filePath3;
+	    	}
+	    	
 	    	@Override
 			public void run() {
 				  try {
-//					  	readLock.acquire();
+					  	readLock.acquire();
 		                writeLock.acquire();
-		                System.out.println("Thread "+Thread.currentThread().getName() + " está SINCRONIZANDO");
+		                System.out.println("Thread "+Thread.currentThread().getName() + " is syncing()");
 		                Thread.sleep(2500);
+		                System.out.println("\ngetfp1"+getFilePath1()+"\ngetfp2"+getFilePath2());
 		                CopyFileIntoAnother(getFilePath1(),getFilePath2());
-		                System.out.println("Thread "+Thread.currentThread().getName() + " finalizou a operação de SINCRONIZAÇÃO");
+		                System.out.println("Thread "+Thread.currentThread().getName() + " syncing() is finished");
 		                writeLock.release();
-		            } catch (InterruptedException e) {
+		                readLock.release();
+				  } catch (InterruptedException e) {
 		                System.out.println(e.getMessage());
 		            } 
 			}
@@ -309,12 +322,12 @@ public class Principal {
 	    	System.out.println("resultado_rand:"+resultado_rand);
 //	    	manageCopyText();
 //	    	addContent();
-//	    	The operations must be realized within the file that will be sorted in the method below!!!
+//	    	The operations must be realized within the file that will be sorted in the method above!!!
 	    	String fileContent = listaDeConteudo.get(resultado_rand).getContent(); //pega o conteúdo armazenado no arquivo sorteado, isto será útil para ler, porém não para escrever
 	    	String filePath = listaDeConteudo.get(resultado_rand).getFilePath();	//pega o caminho do diretório
 	 //   	op.readFileAsString(filePath);
 //	    	System.out.println("fileContent:\n"+fileContent);	//só pra conferir
-//	    	System.out.println("filePath:\n"+filePath);	//só pra conferir
+	    	System.out.println("SÓ PRA CONFERIR filePath:\n"+filePath);	//só pra conferir
 	    	
 	    	Read read = new Read();	
 	    	Write write = new Write();
@@ -326,9 +339,16 @@ public class Principal {
 	    	
 	    	write.setWritable(fileContent);
 	    	write.setFilePath(filePath);
-	    	
-	    	sync.setFilePath1(listaDeConteudo.get(resultado_rand).getFilePath());
-	    	sync.setFilePath2(listaDeConteudo.get(listaDeConteudo.size()-1-resultado_rand).getFilePath());
+	    	write.setSync(sync);
+	    
+	    	TextFile x = listaDeConteudo.remove(resultado_rand);
+	    	System.out.println("x:"+x.getFilePath());
+	    	write.getSync().setFilePath1(listaDeConteudo.get(0).getFilePath());
+//	    	System.out.println("afftocansadao:"+write.getSync().getFilePath1());
+	    	write.getSync().setFilePath2(listaDeConteudo.get(1).getFilePath());
+//	    	System.out.println("meuovograndeesquerdo"+write.getSync().getFilePath2());
+	    	listaDeConteudo.add(x);
+	    	//a linha acima é interessante pois mostra que o ultimo arquivo a sofrer processo de escrita tbm estará na ultima posicao!
 	    	
 	    	//filepath3 que é o arquivo que ainda não foi atualizado será dado por (get(resultado_rand)+get(size()-1))/2
 	    	
@@ -339,12 +359,10 @@ public class Principal {
 //PROBLEMA : APENAS THREADS DE LEITURA ESTÃO SENDO EXECUTADAS!
 
 // TEMOS OUTRO PROBLEMA AS THREADS ESTÃO ESCREVENDO EM SI MESMAS.	    	
-	    	
-	    	
 	    	Thread t1 = new Thread(read);
 	    	t1.setName("thread1");
-	    	Thread t2 = new Thread(read);
-	    	t2.setName("thread2");
+//	    	Thread t2 = new Thread(read);
+//	    	t2.setName("thread2");
 //	        Thread t3 = new Thread(read);
 //	        t3.setName("thread3");
 //	        Thread t4 = new Thread(read);
@@ -352,8 +370,8 @@ public class Principal {
 	        
 	        Thread t5 = new Thread(write);
 	        t5.setName("thread5");
-	        Thread t6 = new Thread(write);
-	        t6.setName("thread6");
+//	        Thread t6 = new Thread(write);
+//	        t6.setName("thread6");
 //	        Thread t7 = new Thread(write);
 //	        t7.setName("thread7");
 //	        Thread t8 = new Thread(write);
@@ -363,11 +381,11 @@ public class Principal {
 //	        t9.setName("thread9");
 	        
 	        t1.start();
-	    	t2.start();
+//	    	t2.start();
 //	        t3.start();
 //	        t4.start(); 
 	        t5.start();
-	        t6.start();
+//	        t6.start();
 //	        t7.start();
 //	        t8.start();
 //	        t9.start();
