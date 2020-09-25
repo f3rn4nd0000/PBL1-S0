@@ -40,26 +40,28 @@ public class Operations {
 	        FileWriter myWriter = new FileWriter(filePath,true);
 	        myWriter.write(s);
 	        myWriter.close();
-	        System.out.println("Successfully wrote to the file.");
+	        System.out.println("Operação de escrita realizada com sucesso!.");
 	      } catch (IOException e) {
-	        System.out.println("An error occurred on write method.");
+	        System.out.println("Ocorreu um erro no método de escrita.");
 	        e.printStackTrace();
 	      }
  	}
 	
+	/**
+	 * O objetivo dessa thread é copiar o conteudo do arquivo original que sofreu alteracoes mais recentes para um arquivo que ainda nao foi sincronizado
+	 * @param filePath1	arquivo que sofreu alteracoes mais recentes
+	 * @param filePath2	arquivo a ser atualizado
+	 */
 	public void CopyFileIntoAnother(String filePath1, String filePath2) {
 		try {
-			//readFileAsString(filePath1);
-			FileWriter myWriter = new FileWriter(filePath2);
+//String s = readFileAsString(filePath1);
+			FileWriter myWriter = new FileWriter(filePath2,true);
 			myWriter.write(readFileAsString(filePath1));
 			myWriter.close();
-			System.out.println("Successfully copied"+"\n"+filePath1+"\n"+" into"+"\n"+filePath2);
+			System.out.println("Arquivo"+"\n"+filePath1+"\n"+"copiado com sucesso em: "+"\n"+filePath2);
 		} catch (IOException e) {
-			System.out.println("An error occurred on sync method.");
+			System.out.println("Um erro ocorreu no método sync.");
 			e.printStackTrace();
-		}
-		
-		
+		} 
 	}
-	
 }
