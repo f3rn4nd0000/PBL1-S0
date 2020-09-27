@@ -58,7 +58,7 @@ public class Operations {
 			FileWriter myWriter = new FileWriter(filePath2);
 			myWriter.write(readFileAsString(filePath1));
 			myWriter.close();
-			System.out.println("\nArquivo"+"\n"+filePath1+"\n"+"copiado com sucesso em: "+"\n"+filePath2+"e em:"+filePath3);
+			System.out.println("\nArquivo"+"\n"+filePath1+"\n"+"copiado com sucesso em: "+"\n"+filePath2);
 		} catch (IOException e) {
 			System.out.println("Um erro ocorreu no método sync.");
 			e.printStackTrace();
