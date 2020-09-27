@@ -55,10 +55,10 @@ public class Operations {
 	public void CopyFileIntoAnother(String filePath1, String filePath2) {
 		try {
 //String s = readFileAsString(filePath1);
-			FileWriter myWriter = new FileWriter(filePath2,true);
+			FileWriter myWriter = new FileWriter(filePath2);
 			myWriter.write(readFileAsString(filePath1));
 			myWriter.close();
-			System.out.println("Arquivo"+"\n"+filePath1+"\n"+"copiado com sucesso em: "+"\n"+filePath2);
+			System.out.println("\nArquivo"+"\n"+filePath1+"\n"+"copiado com sucesso em: "+"\n"+filePath2+"e em:"+filePath3);
 		} catch (IOException e) {
 			System.out.println("Um erro ocorreu no método sync.");
 			e.printStackTrace();
