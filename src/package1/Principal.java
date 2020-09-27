@@ -1,13 +1,8 @@
 package package1;
 import java.io.*;
 import java.util.*;
-//import java.io.BufferedReader;
-//import java.io.FileReader;
 import java.util.concurrent.*;
-//import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.lang.Object;
-
-import package1.Operations;
 
 public class Principal {
 	    
@@ -21,15 +16,15 @@ public class Principal {
 	    private static ArrayList<Thread> arrayDeThreads = new ArrayList<Thread>();
 	    private static ArrayList<Thread> arrayDeSincronizacao = new ArrayList<Thread>();
 	    
-	    Write write = new Write();
-	    Read read = new Read();
-	    Sync sync = new Sync();
+	    static Write write = new Write();
+	    static Read read = new Read();
+	    static Sync sync = new Sync();
 	    
 	    static TextFile f1,f2,f3,f4;
 	    static TextFile tocopy = new TextFile();
 	
 	    //este método instancia os 3 arquivos de texto
-	   static void manageTextFiles() throws IOException {
+	    static void manageTextFiles() throws IOException {
 	    	
 	    	f1 = new TextFile();
 	    	f2 = new TextFile();
@@ -48,6 +43,16 @@ public class Principal {
 	    	listaDeConteudo.add(f3);
 	    }
 
+	    static int sortOutSleep() {
+	    	int rand;
+	    	int max = 3000; 
+	        int min = 0; 
+	        int range = max - min + 1; 
+	  
+	        rand = (int)(Math.random() * range) + min; 
+	        return rand;
+	   }
+	    
 	    static int sortOut() {
 	    	int rand;
 	    	int max = 2; 
@@ -67,16 +72,6 @@ public class Principal {
 	    	rand = (int)(Math.random() * range) + min; 
 	    	return rand;
 	    }
-	    
-	    static Thread sortOutThread() {
-	    	int rand;
-	    	int max = 2; 
-	        int min = 0; 
-	        int range = max - min + 1; 
-	  
-	             rand = (int)(Math.random() * range) + min; 
-	        return arrayDeThreads.get(rand);
-	   }
 	    
 	    static void manageThreads() {
 		    //são determinadas durante as sessões que deverão ser criadas 4 threads de leitura e 4 de escrita
@@ -98,15 +93,6 @@ public class Principal {
 	        Thread t8 = new Thread(write);
 	        t8.setName("thread de escrita");
 		   
-	        arrayDeThreads.add(t1);
-	        arrayDeThreads.add(t2);
-	        arrayDeThreads.add(t3);
-	        arrayDeThreads.add(t4);
-	        arrayDeThreads.add(t5);
-	        arrayDeThreads.add(t6);
-	        arrayDeThreads.add(t7);
-	        arrayDeThreads.add(t8);
-	        
 		   	Sync sync1 = new Sync();
 		   	Sync sync2 = new Sync();
 		   	Sync sync3 = new Sync();
@@ -129,45 +115,88 @@ public class Principal {
 		   	s2.setName("thread de sync");
 		   	Thread s3 = new Thread(sync3);
 		   	s3.setName("thread de sync");
-		   	
-		   	arrayDeThreads.add(s1);
-		   	arrayDeThreads.add(s2);
-		   	arrayDeThreads.add(s3);
 		   
-		   for(int i = 0; i < arrayDeThreads.size(); i++) {
-			   System.out.println("thread "+i+"="+arrayDeThreads.get(i).getName()+"\n");
-		   }
 	   }
 
 	    public static void main(String[] args) throws Exception {
-	    	
-	    	manageTextFiles();
-	    	manageThreads();
 //	    	threadsDeSincronizacao();
-	    	int resultado_rand = sortOut();
+	    	manageTextFiles();
+	    	   Thread t1 = new Thread(read);
+		    	t1.setName("thread de leitura");
+		    	Thread t2 = new Thread(read);
+		    	t2.setName("thread de leitura");
+		        Thread t3 = new Thread(read);
+		        t3.setName("thread de leitura");
+		        Thread t4 = new Thread(read);
+		        t4.setName("thread de leitura");
+		        Thread t5 = new Thread(write);
+		        t5.setName("thread de escrita");
+		        Thread t6 = new Thread(write);
+		        t6.setName("thread de escrita");
+		        Thread t7 = new Thread(write);
+		        t7.setName("thread de escrita");
+		        Thread t8 = new Thread(write);
+		        t8.setName("thread de escrita");
+			    
+			   	Sync sync1 = new Sync();
+			   	Sync sync2 = new Sync();
+			   	Sync sync3 = new Sync();
 
-	    	String fileContent = listaDeConteudo.get(resultado_rand).getContent(); //pega o conteúdo armazenado no arquivo sorteado, isto será útil para ler, porém não para escrever
-	    	String filePath = listaDeConteudo.get(resultado_rand).getFilePath();  //pega o caminho do diretório
-	    	read.setReadable(fileContent);
-	    	read.setFilePath(filePath);
-	    	write.setWritable(fileContent);
-	    	write.setFilePath(filePath);
-	    	sync.setTextoOriginal(filePath);
-	    	//Executa um numero minimo de vezes, min = 3;
-//	    	int min = 4;//(sortOut() +1)*3;
-	    	
-	    	//aqui as threads de leitura e escrita executarão seus serviços
-	    	for(int i = 0; i < min; i++) {
-	    		int resultado_thread = sortOutPlus11(); //seleciona um numero de 0 a 11 para selecionar qual thread entrará em acao
+			   	sync1.setTextoOriginal(f1.getContent());
+			   	sync1.setCopia1(f2.getContent());
+			   	sync1.setCopia2(f3.getContent());
+			   	
+			   	sync2.setTextoOriginal(f2.getContent());
+			   	sync2.setCopia1(f1.getContent());
+			   	sync2.setCopia2(f3.getContent());
+			   	
+			   	sync3.setTextoOriginal(f3.getContent());
+			   	sync3.setCopia1(f2.getContent());
+			   	sync3.setCopia2(f1.getContent());
+			   	
+			   	Thread s1 = new Thread(sync1);
+			   	s1.setName("thread de sync");
+			   	Thread s2 = new Thread(sync2);
+			   	s2.setName("thread de sync");
+			   	Thread s3 = new Thread(sync3);
+			   	s3.setName("thread de sync");
+			   	
+			   	s1.setPriority(2);
+			   	s2.setPriority(2);
+			   	s3.setPriority(2);
+			   	
+	    	int numero_de_execucoes = sortOut() + sortOut() ;
+	  
+	    	for(int i = 0 ; i < numero_de_execucoes; i++) {
+	    		int resultado_rand = sortOut();
+
+	    		String fileContent = listaDeConteudo.get(resultado_rand).getContent(); //pega o conteúdo armazenado no arquivo sorteado, isto será útil para ler, porém não para escrever
+	    		String filePath = listaDeConteudo.get(resultado_rand).getFilePath();  //pega o caminho do diretório
+
+	    		read.setReadable(fileContent);
+	    		read.setFilePath(filePath);
+	    		write.setWritable(fileContent);
+	    		write.setFilePath(filePath);
+	    		
+	    		
 	    	}
-//	    		int resultado_thread_sync = sortOut();	
-//	    		Thread random_thread = arrayDeThreads.get(resultado_thread);
-//	    		if(resultado_thread <= 3) {
-//	    			 random_thread = new Thread(read);
-//	    	    	 random_thread.setFilePath(filePath);
-//	    		}
-//	    		random_thread.start();
-//	    	}
+	    	int min = (sortOut() +1)*3; //valor minimo de execucoes  =  3
+	    	for(int i = 0; i < min; i++) {
+	    		int resultado_thread = sortOutSleep(); //seleciona um numero de 0 a 11 para selecionar qual thread entrará em acao
+	    		
+	    		t1.sleep(sortOutSleep());
+	    		t2.sleep(sortOutSleep());
+	    		t3.sleep(sortOutSleep());
+	    		t4.sleep(sortOutSleep());
+	    		t5.sleep(sortOutSleep());
+	    		t6.sleep(sortOutSleep());
+	    		t7.sleep(sortOutSleep());
+	    		t8.sleep(sortOutSleep());
+	    		s1.sleep(sortOutSleep());
+	    		s2.sleep(sortOutSleep());
+	    		s3.sleep(sortOutSleep());
+	    	}
+	    	
 //	    	Read read = new Read();	
 //	    	Write write = new Write();
 //	    	Sync sync = new Sync();
