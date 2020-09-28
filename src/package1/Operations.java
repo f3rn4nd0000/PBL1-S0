@@ -9,6 +9,11 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * Classe que contém as operações de entrada e saída realizadas pelas classes Read, Write e Sync
+ * @author Fernando Mota
+ *
+ */
 public class Operations {
 	
 /**

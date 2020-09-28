@@ -1,5 +1,0 @@
-
-
-----------------------------------
-
-SGBDs e aplicações similaresRaramente implementada “pura” nos SOs

@@ -7,8 +7,8 @@ import java.io.File;
  */
 public class TextFile extends Operations {
 	
-	String filePath;
-	String content;
+	String filePath; //representa o caminho do diretório
+	String content; //representa o conteúdo do arquivo de texto!
 	
 	public TextFile() {
 		this.filePath = filePath;

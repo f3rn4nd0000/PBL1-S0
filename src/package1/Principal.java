@@ -3,22 +3,27 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+
+/**
+ * Classe principal do programa.
+ * @author Fernando Mota Freitas
+ *
+ */
 public class Principal {
 
 	static Semaphore readLock = new Semaphore(1,true);
 	static Semaphore writeLock = new Semaphore(1,true);
 	static int readCount = 0;
-	static int syncCount = 0;
 
+	private static LinkedList<TextFile> listaDeConteudo = new LinkedList<TextFile>(); // aqui serão armazenados os arquivos de texto!
+	
 	static Operations op = new Operations();
-	private static LinkedList<TextFile> listaDeConteudo = new LinkedList<TextFile>(); // aqui era <String>
-
+	
 	static Write write = new Write();
 	static Read read = new Read();
 	static Sync sync = new Sync();
 
-	static TextFile f1,f2,f3,f4;
-	static TextFile tocopy = new TextFile();
+	static TextFile f1,f2,f3; //arquivos de texto
 
 	//este método instancia os 3 arquivos de texto
 	static void manageTextFiles() throws IOException {
@@ -40,16 +45,11 @@ public class Principal {
 		listaDeConteudo.add(f3);
 	}
 
-	static int sortOutSleep() {
-		int rand;
-		int max = 3000; 
-		int min = 0; 
-		int range = max - min + 1; 
-
-		rand = (int)(Math.random() * range) + min; 
-		return rand;
-	}
-
+	
+/**
+ * Método mais usado durante o programa que realizará os sorteios
+ * @return  numero de 0 a 2
+ */
 	static int sortOut() {
 		int rand;
 		int max = 2; 
@@ -60,16 +60,11 @@ public class Principal {
 		return rand;
 	}
 
-	static int sortOutPlus11(){
-		int rand;
-		int max = 11; 
-		int min = 0; 
-		int range = max - min + 1; 
 
-		rand = (int)(Math.random() * range) + min; 
-		return rand;
-	}
-
+/**
+ * Método para sortear alguma das threads que estará inserida na array de threads
+ * @return	número de 0 a 7
+ */
 	static int sortOutPlus8() {
 		int rand;
 		int max = 7; 
@@ -80,12 +75,15 @@ public class Principal {
 		return rand;
 	}
 
+	/**
+	 * Método principal de execução do programa
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
-		
-		/**
-		 * O método abaixo serve para instanciar 4 threads de leitura, 4 de escrita e 3 threads de sincronização!
-		 */
 		manageTextFiles();
+
+		//Abaixo estamos instanciando as 4 threads de leitura, 4 de escrita e 3 threads de sincronização
 		Thread t1 = new Thread(read);
 		t1.setName("thread de leitura 1");
 		Thread t2 = new Thread(read);
@@ -102,7 +100,7 @@ public class Principal {
 		t7.setName("thread de escrita 3");
 		Thread t8 = new Thread(write);
 		t8.setName("thread de escrita 4");
-
+		
 		Thread[] arrayDeThread = new Thread[8];
 
 		arrayDeThread[0] = t1;
@@ -136,16 +134,9 @@ public class Principal {
 		s2.setName("thread de sync");
 		Thread s3 = new Thread(sync3);
 		s3.setName("thread de sync");
-		
-		
-		//As threads de sincronizacao devem ter prioridade maior do que as threads de escrita!
-		s1.setPriority(2);
-		s2.setPriority(2);
-		s3.setPriority(2);
 
-		int numero_de_execucoes = sortOut() + sortOut() ; //numero maximo de execucoes = 4
-
-		System.out.println("bbbbbbb"+numero_de_execucoes);
+		int numero_de_execucoes = 1 + sortOut() + sortOut() ; //numero maximo de loops que o programa realiza = 4
+		
 		for(int i = 0 ; i < numero_de_execucoes; i++) {
 
 			int resultado_rand = sortOut();
@@ -157,13 +148,11 @@ public class Principal {
 			read.setFilePath(filePath);
 			write.setWritable(fileContent);
 			write.setFilePath(filePath);
-			sync.setTextoOriginal(fileContent);
-//			sync.setCopia1(listaDeConteudo.get(Math.abs(1-resultado_rand)).getFilePath());
-//			sync.setCopia2(listaDeConteudo.get(Math.abs((1+resultado_rand)%3)).getFilePath());
+			
 
 			int min = (sortOut() +1)*3; //valor minimo de execucoes  =  3
-			int num_threads = sortOut() + sortOut() + sortOut() ; //valor minimo de threads a serem executadas simultaneamente!
-			System.out.println("aaaaaaaaa"+num_threads);
+			int num_threads = sortOut() + sortOut() + sortOut() ; //valor minimo de threads a serem executadas simultaneamente (=6) !
+			Thread[] executingThread = new Thread[num_threads];
 
 			for(int j = 0; j < min; j++) {
 				for(int k = 0; k < num_threads; k++) {
@@ -171,25 +160,19 @@ public class Principal {
 					arrayDeThread[resultado_thread].start();
 					//trecho abaixo garante que se uma thread de escrita executar, então todas as threads de sincronização também irão
 					if(resultado_thread>=4) {
-						if(resultado_rand==0) {
+						if(resultado_rand==0) {	//resultado_rand é o numero que definirá qual dos tres arquivos serão realizadas operações de leitura/escita
 							s1.start();
-							s1.interrupt();
-							s1.
 						}
 						else if(resultado_rand==1) {
 							s2.start();
-							s2.interrupt();
 						}
 						else if(resultado_rand==2){
 							s3.start();
-							s3.interrupt();
 						}
 					}
 				}
 			}
 		}
-		System.out.println("setWritable:"+write.getWritable()+"\n");
-		System.out.println("setFilePath:"+write.getFilePath()+"\n");
 	}
 }
 
